@@ -1,0 +1,1258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KinglyBosses Wiki</title>
+    <style>
+        :root {
+            --primary-color: #1a1a1a;
+            --secondary-color: #4a90e2;
+            --background: #121212;
+            --text-color: #ffffff;
+            --surface-color: #2d2d2d;
+            --border-color: #404040;
+            --success: #27ae60;
+            --warning: #f1c40f;
+            --hover-effect: rgba(255, 255, 255, 0.05);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            line-height: 1.6;
+            background-color: var(--background);
+            color: var(--text-color);
+            display: flex;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            height: 100vh;
+            background: var(--surface-color);
+            padding: 20px;
+            position: fixed;
+            overflow-y: auto;
+            border-right: 1px solid var(--border-color);
+        }
+
+        .sidebar h2 {
+            color: var(--secondary-color);
+            margin: 20px 0;
+            font-size: 1.3em;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .sidebar ul {
+            list-style: none;
+        }
+
+        .sidebar li {
+            margin: 8px 0;
+            cursor: pointer;
+            padding: 12px;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            background: var(--primary-color);
+            border: 1px solid var(--border-color);
+        }
+
+        .sidebar li:hover {
+            background: var(--hover-effect);
+            border-color: var(--secondary-color);
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 280px;
+            padding: 40px;
+            flex-grow: 1;
+            max-width: 1200px;
+        }
+
+        .section {
+            background: var(--surface-color);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 24px rgba(0,0,0,0.2);
+        }
+
+        .config-block {
+            margin: 25px 0;
+            padding: 20px;
+            border-left: 4px solid var(--secondary-color);
+            background-color: var(--primary-color);
+            border-radius: 6px;
+        }
+
+        .language-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            background: var(--surface-color);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .language-toggle:hover {
+            border-color: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+
+        .collapsible {
+            cursor: pointer;
+            padding: 16px 20px;
+            width: 100%;
+            border: 1px solid var(--border-color);
+            text-align: left;
+            background: var(--primary-color);
+            color: var(--text-color);
+            margin: 10px 0;
+            border-radius: 8px;
+            font-size: 1em;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .collapsible:hover {
+            border-color: var(--secondary-color);
+        }
+
+        .collapsible::after {
+            content: '\002B';
+            font-weight: 600;
+            color: var(--secondary-color);
+        }
+
+        .active::after {
+            content: '\2212';
+        }
+
+        .content {
+            padding: 0 20px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .code-example {
+            background: var(--primary-color);
+            color: #f8f8f2;
+            padding: 16px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-family: 'Fira Code', monospace;
+            overflow-x: auto;
+            border: 1px solid var(--border-color);
+        }
+
+        .step-by-step {
+            counter-reset: step-counter;
+            margin: 25px 0;
+        }
+
+        .step {
+            counter-increment: step-counter;
+            margin: 20px 0;
+            padding: 20px;
+            background: var(--primary-color);
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            position: relative;
+            transition: transform 0.3s ease;
+        }
+
+        .step:hover {
+            transform: translateX(5px);
+        }
+
+        .step::before {
+            content: counter(step-counter);
+            position: absolute;
+            left: -15px;
+            top: -15px;
+            background: var(--secondary-color);
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.9em;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        h2 {
+            font-size: 1.8em;
+            margin-bottom: 1.5em;
+            font-weight: 600;
+            position: relative;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background: var(--secondary-color);
+            border-radius: 2px;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                border-right: none;
+                border-bottom: 1px solid var(--border-color);
+            }
+            .main-content {
+                margin-left: 0;
+                padding: 20px;
+            }
+            .language-toggle {
+                position: relative;
+                top: auto;
+                right: auto;
+                margin: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="language-toggle" onclick="toggleLanguage()">EN/ES</button>
+
+  <!-- Sidebar -->
+  <nav class="sidebar">
+    <h2>Wiki Sections</h2>
+    <ul>
+        <li onclick="showSection('quick-start')"><span lang="en">Quick Start</span><span lang="es">Inicio Rápido</span></li>
+        <li onclick="showSection('main-config')"><span lang="en">Main Configuration</span><span lang="es">Configuración Principal</span></li>
+        <li onclick="showSection('boss-creation')"><span lang="en">Boss Creation</span><span lang="es">Creación de Jefes</span></li>
+        <li onclick="showSection('structures-config')"><span lang="en">Structures</span><span lang="es">Estructuras</span></li>
+        <li onclick="showSection('items-config')"><span lang="en">Items</span><span lang="es">Objetos</span></li>
+        <li onclick="showSection('attacks-config')"><span lang="en">Attacks</span><span lang="es">Ataques</span></li>
+        <li onclick="showSection('particles-config')"><span lang="en">Particles</span><span lang="es">Partículas</span></li>
+        <li onclick="showSection('groups-config')"><span lang="en">Groups</span><span lang="es">Grupos</span></li>
+    </ul>
+</nav>
+
+<!-- Main Content -->
+<div class="main-content">
+    <!-- Quick Start Section (unchanged) -->
+    <section id="quick-start" class="section">
+        <h2><span lang="en">Quick Start Guide</span><span lang="es">Guía Rápida</span></h2>
+        <div class="step-by-step">
+            <div class="step">
+                <h3><span lang="en">1. Basic Configuration</span><span lang="es">1. Configuración Básica</span></h3>
+                <p lang="en">Start by setting up your boss basics in boss.yml</p>
+                <p lang="es">Comienza configurando los aspectos básicos en boss.yml</p>
+                <div class="code-example">
+                    <pre>bosses:
+my_first_boss:
+boss-id: "001"
+enabled: true
+health: 500
+attack-damage: 20</pre>
+                </div>
+            </div>
+            <div class="step">
+                <h3><span lang="en">2. Add Attacks</span><span lang="es">2. Añadir Ataques</span></h3>
+                <p lang="en">Define attacks in attacks.yml</p>
+                <p lang="es">Define ataques en attacks.yml</p>
+                <div class="code-example">
+                    <pre>attacks:
+fire_breath:
+type: magical
+damage: 40
+effect_id: 12</pre>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Configuration Section - New Addition -->
+    <section id="main-config" class="section" style="display:none;">
+        <h2><span lang="en">Main Configuration</span><span lang="es">Configuración Principal</span></h2>
+        
+        <!-- Introduction -->
+        <p lang="en">This section explains the main settings in config.yml, which controls the plugin’s general behavior, boss spawning, health bars, abilities, and permissions.</p>
+        <p lang="es">Esta sección explica las configuraciones principales en config.yml, que controla el comportamiento general del plugin, la aparición de jefes, barras de salud, habilidades y permisos.</p>
+
+        <!-- Step-by-Step -->
+        <div class="step-by-step">
+            <div class="step">
+                <h3><span lang="en">1. General Settings</span><span lang="es">1. Configuraciones Generales</span></h3>
+                <p lang="en">Basic plugin settings for language, updates, and debugging.</p>
+                <p lang="es">Configuraciones básicas del plugin para idioma, actualizaciones y depuración.</p>
+                <div class="code-example">
+                    <pre>settings:
+language: "en_us"
+check-for-updates: true
+debug-mode: false</pre>
+                </div>
+                <p lang="en"><strong>Explanation:</strong>
+                    <ul>
+                        <li><code>language: "en_us"</code>: Sets the language for plugin messages (e.g., "en_us" for English, "es_es" for Spanish).</li>
+                        <li><code>check-for-updates: true</code>: Notifies admins of new plugin versions.</li>
+                        <li><code>debug-mode: false</code>: When true, logs detailed debug info for troubleshooting.</li>
+                    </ul>
+                </p>
+                <p lang="es"><strong>Explicación:</strong>
+                    <ul>
+                        <li><code>language: "en_us"</code>: Establece el idioma para los mensajes del plugin (por ejemplo, "en_us" para inglés, "es_es" para español).</li>
+                        <li><code>check-for-updates: true</code>: Notifica a los administradores sobre nuevas versiones del plugin.</li>
+                        <li><code>debug-mode: false</code>: Cuando es true, registra información detallada de depuración.</li>
+                    </ul>
+                </p>
+            </div>
+
+            <div class="step">
+                <h3><span lang="en">2. Logging Settings</span><span lang="es">2. Configuraciones de Registro</span></h3>
+                <p lang="en">Controls logging for debugging purposes.</p>
+                <p lang="es">Controla el registro para fines de depuración.</p>
+                <div class="code-example">
+                    <pre>logging:
+enable-logs: true
+log-file: "logs/kinglybosses.log"</pre>
+                </div>
+                <p lang="en"><strong>Explanation:</strong>
+                    <ul>
+                        <li><code>enable-logs: true</code>: Enables logging of plugin events.</li>
+                        <li><code>log-file: "logs/kinglybosses.log"</code>: Path to the log file relative to the server directory.</li>
+                    </ul>
+                    Note: Logging is in beta and may be refined in future updates.
+                </p>
+                <p lang="es"><strong>Explicación:</strong>
+                    <ul>
+                        <li><code>enable-logs: true</code>: Habilita el registro de eventos del plugin.</li>
+                        <li><code>log-file: "logs/kinglybosses.log"</code>: Ruta al archivo de registro relativa al directorio del servidor.</li>
+                    </ul>
+                    Nota: El registro está en beta y puede refinarse en futuras actualizaciones.
+                </p>
+            </div>
+        </div>
+
+        <!-- Advanced Configurations -->
+        <div class="config-block">
+            <button class="collapsible"><span lang="en">▸ General Boss Settings</span><span lang="es">▸ Configuraciones Generales de Jefes</span></button>
+            <div class="content">
+                <p lang="en">Controls how bosses spawn globally.</p>
+                <p lang="es">Controla cómo aparecen los jefes globalmente.</p>
+                <div class="code-example">
+                    <pre>general:
+spawnRandom: true
+spawnInterval: 300
+broadcastBossSpawn: true
+location:
+world: "world"
+coordinates:
+  x: 0
+  y: 0
+  z: 0</pre>
+                </div>
+                <p lang="en"><strong>Explanation:</strong>
+                    <ul>
+                        <li><code>spawnRandom: true</code>: Enables random spawning (currently the only mode, temporarily disabled for other options).</li>
+                        <li><code>spawnInterval: 300</code>: Time between random spawns (300 seconds = 5 minutes).</li>
+                        <li><code>broadcastBossSpawn: true</code>: Announces boss spawns to all players.</li>
+                        <li><code>location</code>: Default spawn point if no specific location is set in boss.yml; uses "world" at coordinates (0, 0, 0).</li>
+                    </ul>
+                </p>
+                <p lang="es"><strong>Explicación:</strong>
+                    <ul>
+                        <li><code>spawnRandom: true</code>: Habilita la aparición aleatoria (actualmente el único modo, deshabilitado temporalmente para otras opciones).</li>
+                        <li><code>spawnInterval: 300</code>: Tiempo entre apariciones aleatorias (300 segundos = 5 minutos).</li>
+                        <li><code>broadcastBossSpawn: true</code>: Anuncia las apariciones de jefes a todos los jugadores.</li>
+                        <li><code>location</code>: Punto de aparición predeterminado si no se establece una ubicación específica en boss.yml; usa "world" en las coordenadas (0, 0, 0).</li>
+                    </ul>
+                </p>
+            </div>
+
+            <button class="collapsible"><span lang="en">▸ Boss Health Bar</span><span lang="es">▸ Barra de Salud del Jefe</span></button>
+            <div class="content">
+                <p lang="en">Customizes the boss health bar display.</p>
+                <p lang="es">Personaliza la visualización de la barra de salud del jefe.</p>
+                <div class="code-example">
+                    <pre>bossHealthBar:
+active: true
+title: "&c&lBoss: &7{boss}"
+color: "RED"
+style: "SOLID"
+progress: 1.0
+update_interval: 0.1
+display_distance:
+enabled: true
+radius: 100
+permission_based_display:
+enabled: false
+permission: "bossbar.view"
+hide_on_death:
+enabled: true</pre>
+                </div>
+                <p lang="en"><strong>Explanation:</strong>
+                    <ul>
+                        <li><code>active: true</code>: Enables the health bar.</li>
+                        <li><code>title</code>: Displayed text; <code>{boss}</code> is replaced by the boss’s name.</li>
+                        <li><code>color: "RED"</code>: Bar color (options: red, blue, green, etc.).</li>
+                        <li><code>style: "SOLID"</code>: Bar style (e.g., solid, segmented_6).</li>
+                        <li><code>progress: 1.0</code>: Initial health percentage (0 to 1).</li>
+                        <li><code>update_interval: 0.1</code>: Updates every 0.1 seconds.</li>
+                        <li><code>display_distance</code>: Limits visibility to players within 100 blocks.</li>
+                        <li><code>permission_based_display</code>: When enabled, restricts visibility to players with the "bossbar.view" permission.</li>
+                        <li><code>hide_on_death: true</code>: Hides the bar when the boss dies.</li>
+                    </ul>
+                </p>
+                <p lang="es"><strong>Explicación:</strong>
+                    <ul>
+                        <li><code>active: true</code>: Habilita la barra de salud.</li>
+                        <li><code>title</code>: Texto mostrado; <code>{boss}</code> se reemplaza por el nombre del jefe.</li>
+                        <li><code>color: "RED"</code>: Color de la barra (opciones: red, blue, green, etc.).</li>
+                        <li><code>style: "SOLID"</code>: Estilo de la barra (por ejemplo, solid, segmented_6).</li>
+                        <li><code>progress: 1.0</code>: Porcentaje inicial de salud (0 a 1).</li>
+                        <li><code>update_interval: 0.1</code>: Se actualiza cada 0.1 segundos.</li>
+                        <li><code>display_distance</code>: Limita la visibilidad a jugadores dentro de 100 bloques.</li>
+                        <li><code>permission_based_display</code>: Cuando está habilitado, restringe la visibilidad a jugadores con el permiso "bossbar.view".</li>
+                        <li><code>hide_on_death: true</code>: Oculta la barra cuando el jefe muere.</li>
+                    </ul>
+                </p>
+            </div>
+
+            <button class="collapsible"><span lang="en">▸ Abilities</span><span lang="es">▸ Habilidades</span></button>
+            <div class="content">
+                <p lang="en">Defines global boss abilities.</p>
+                <p lang="es">Define las habilidades globales de los jefes.</p>
+                <div class="code-example">
+                    <pre>abilities:
+enableBossAbilities: true
+abilityCooldown: 10
+abilityList:
+- "fireball"
+- "lightning"
+- "teleport"
+- "summon_minions"</pre>
+                </div>
+                <p lang="en"><strong>Explanation:</strong>
+                    <ul>
+                        <li><code>enableBossAbilities: true</code>: Activates abilities (temporarily disabled).</li>
+                        <li><code>abilityCooldown: 10</code>: Default cooldown between ability uses (10 seconds).</li>
+                        <li><code>abilityList</code>: Predefined abilities available to bosses; specific behaviors depend on implementation.</li>
+                    </ul>
+                </p>
+                <p lang="es"><strong>Explicación:</strong>
+                    <ul>
+                        <li><code>enableBossAbilities: true</code>: Activa las habilidades (deshabilitado temporalmente).</li>
+                        <li><code>abilityCooldown: 10</code>: Enfriamiento predeterminado entre usos de habilidades (10 segundos).</li>
+                        <li><code>abilityList</code>: Habilidades predefinidas disponibles para los jefes; los comportamientos específicos dependen de la implementación.</li>
+                    </ul>
+                </p>
+            </div>
+
+            <button class="collapsible"><span lang="en">▸ Advanced Mechanics</span><span lang="es">▸ Mecánicas Avanzadas</span></button>
+            <div class="content">
+                <p lang="en">Adds dynamic combat features like enrage and phases.</p>
+                <p lang="es">Añade características dinámicas de combate como furia y fases.</p>
+                <div class="code-example">
+                    <pre>advancedMechanics:
+enrage:
+enabled: true
+trigger_health_percentage: 20
+effect:
+  particle: "FLAME"
+  sound: "ENTITY_ENDER_DRAGON_GROWL"
+damage_multiplier: 1.5
+phases:
+enabled: true
+phaseList:
+  - health_percentage: 50
+    message: "&cThe boss grows stronger!"
+    abilities: ["lightning", "summon_minions"]
+  - health_percentage: 25
+    message: "&cThe boss is in a frenzy!"
+    abilities: ["fireball", "teleport"]</pre>
+                </div>
+                <p lang="en"><strong>Explanation:</strong>
+                    <ul>
+                        <li><code>enrage</code>: Boosts the boss at low health.</li>
+                        <li><code>trigger_health_percentage: 20</code>: Enrages at 20% health.</li>
+                        <li><code>effect</code>: Adds visual (flame particles) and audio (dragon growl) cues.</li>
+                        <li><code>damage_multiplier: 1.5</code>: Increases damage by 50% when enraged.</li>
+                        <li><code>phases</code>: Changes boss behavior at health thresholds.</li>
+                        <li><code>phaseList</code>: Defines phases; at 50% health, uses lightning and minions; at 25%, uses fireball and teleport.</li>
+                    </ul>
+                </p>
+                <p lang="es"><strong>Explicación:</strong>
+                    <ul>
+                        <li><code>enrage</code>: Potencia al jefe con poca salud.</li>
+                        <li><code>trigger_health_percentage: 20</code>: Se enfurece al 20% de salud.</li>
+                        <li><code>effect</code>: Añade señales visuales (partículas de fuego) y auditivas (rugido de dragón).</li>
+                        <li><code>damage_multiplier: 1.5</code>: Aumenta el daño en un 50% cuando está enfurecido.</li>
+                        <li><code>phases</code>: Cambia el comportamiento del jefe en umbrales de salud.</li>
+                        <li><code>phaseList</code>: Define fases; al 50% de salud, usa relámpagos y minions; al 25%, usa bola de fuego y teletransporte.</li>
+                    </ul>
+                </p>
+            </div>
+
+            <button class="collapsible"><span lang="en">▸ Permissions</span><span lang="es">▸ Permisos</span></button>
+            <div class="content">
+                <p lang="en">Defines plugin permissions.</p>
+                <p lang="es">Define los permisos del plugin.</p>
+                <div class="code-example">
+                    <pre>permissions:
+kinglybosses.summon:
+description: "Permission to summon bosses."
+default: "op"
+kinglybosses.disable:
+description: "Permission to disable bosses."
+default: "op"
+kinglybosses.reload:
+description: "Permission to reload the plugin."
+default: "op"
+kinglybosses.info:
+description: "Permission to view boss information."
+default: "op"
+kinglybosses.bypass:
+description: "Permission to bypass restrictions."
+default: "op"</pre>
+                </div>
+                <p lang="en"><strong>Explanation:</strong>
+                    <ul>
+                        <li>Each permission has a <code>description</code> and <code>default</code> value.</li>
+                        <li><code>default: "op"</code>: Only operators have these permissions by default.</li>
+                        <li>Permissions control summoning, disabling, reloading, viewing info, and bypassing restrictions.</li>
+                    </ul>
+                </p>
+                <p lang="es"><strong>Explicación:</strong>
+                    <ul>
+                        <li>Cada permiso tiene una <code>description</code> y un valor <code>default</code>.</li>
+                        <li><code>default: "op"</code>: Solo los operadores tienen estos permisos por defecto.</li>
+                        <li>Los permisos controlan la invocación, desactivación, recarga, visualización de información y omisión de restricciones.</li>
+                    </ul>
+                </p>
+            </div>
+        </div>
+
+        <!-- Tips and Common Errors -->
+        <div class="step">
+            <h3><span lang="en">⚠️ Tips & Common Errors</span><span lang="es">⚠️ Consejos y Errores Comunes</span></h3>
+            <ul>
+                <li lang="en">Ensure <code>world</code> matches an existing server world.</li>
+                <li lang="es">Asegúrate de que <code>world</code> coincida con un mundo existente en el servidor.</li>
+                <li lang="en">Use valid Minecraft sound and particle names (e.g., <code>ENTITY_ENDER_DRAGON_GROWL</code>, <code>FLAME</code>).</li>
+                <li lang="es">Usa nombres válidos de sonidos y partículas de Minecraft (por ejemplo, <code>ENTITY_ENDER_DRAGON_GROWL</code>, <code>FLAME</code>).</li>
+                <li lang="en">Set <code>debug-mode: true</code> and check logs if issues arise.</li>
+                <li lang="es">Establece <code>debug-mode: true</code> y revisa los registros si surgen problemas.</li>
+            </ul>
+        </div>
+    </section>
+        <!-- Boss Creation Section -->
+      <!-- Boss Creation Section - Updated Content -->
+<!-- Boss Creation Section - Fully Expanded with Explanations -->
+<section id="boss-creation" class="section" style="display:none;">
+    <h2><span lang="en">Complete Boss Creation</span><span lang="es">Creación Completa de Jefes</span></h2>
+    
+    <!-- Introduction -->
+    <p lang="en">This section details how to create bosses using the boss.yml configuration, with examples based on three unique bosses: Epic Boss, Mighty Guardian, and Shadow Beast.</p>
+    <p lang="es">Esta sección detalla cómo crear jefes usando la configuración boss.yml, con ejemplos basados en tres jefes únicos: Epic Boss, Mighty Guardian y Shadow Beast.</p>
+
+    <!-- Step-by-Step -->
+    <div class="step-by-step">
+        <div class="step">
+            <h3><span lang="en">1. Basic Structure</span><span lang="es">1. Estructura Básica</span></h3>
+            <p lang="en">Every boss starts with a unique identifier under the 'bosses' section.</p>
+            <p lang="es">Cada jefe comienza con un identificador único bajo la sección 'bosses'.</p>
+            <div class="code-example">
+                <pre>bosses:
+  'epic_boss':
+    # Configuration goes here</pre>
+            </div>
+            <p lang="en"><strong>Explanation:</strong> The <code>bosses</code> key is the root of all boss configurations. Each boss is defined with a unique name (e.g., <code>'epic_boss'</code>) that acts as its identifier in the file. This name doesn’t affect gameplay but must be unique to avoid conflicts.</p>
+            <p lang="es"><strong>Explicación:</strong> La clave <code>bosses</code> es la raíz de todas las configuraciones de jefes. Cada jefe se define con un nombre único (por ejemplo, <code>'epic_boss'</code>) que actúa como su identificador en el archivo. Este nombre no afecta el juego, pero debe ser único para evitar conflictos.</p>
+        </div>
+
+        <div class="step">
+            <h3><span lang="en">2. Core Settings</span><span lang="es">2. Configuraciones Esenciales</span></h3>
+            <p lang="en">Define the boss's identity, type, and basic stats.</p>
+            <p lang="es">Define la identidad, tipo y estadísticas básicas del jefe.</p>
+            <div class="code-example">
+                <pre>'epic_boss':
+  boss-id: "3"
+  level: 10
+  enabled: true
+  mob-type: ENDER_DRAGON
+  display-name: 'Dragón del Caos'
+  health: 1000
+  attack-damage: 25
+  movement-speed: 0.3</pre>
+            </div>
+            <p lang="en"><strong>Explanation:</strong> These are the essential settings for any boss:
+                <ul>
+                    <li><code>boss-id: "3"</code>: A unique identifier for the boss, separate from its name.</li>
+                    <li><code>level: 10</code>: Indicates difficulty; higher levels may increase rewards or stats.</li>
+                    <li><code>enabled: true</code>: Must be true for the boss to be active in the game.</li>
+                    <li><code>mob-type: ENDER_DRAGON</code>: Defines the entity type (use exact Minecraft entity names).</li>
+                    <li><code>display-name: 'Dragón del Caos'</code>: The visible name players see, supports color codes.</li>
+                    <li><code>health: 1000</code>: Total health points; higher values make the boss tougher.</li>
+                    <li><code>attack-damage: 25</code>: Damage per hit; balance this with health for difficulty.</li>
+                    <li><code>movement-speed: 0.3</code>: Speed of movement; 0.3 is moderate, adjust for balance.</li>
+                </ul>
+            </p>
+            <p lang="es"><strong>Explicación:</strong> Estas son las configuraciones esenciales para cualquier jefe:
+                <ul>
+                    <li><code>boss-id: "3"</code>: Un identificador único para el jefe, separado de su nombre.</li>
+                    <li><code>level: 10</code>: Indica la dificultad; niveles más altos pueden aumentar recompensas o estadísticas.</li>
+                    <li><code>enabled: true</code>: Debe ser true para que el jefe esté activo en el juego.</li>
+                    <li><code>mob-type: ENDER_DRAGON</code>: Define el tipo de entidad (usa nombres exactos de entidades de Minecraft).</li>
+                    <li><code>display-name: 'Dragón del Caos'</code>: El nombre visible para los jugadores, soporta códigos de color.</li>
+                    <li><code>health: 1000</code>: Puntos totales de vida; valores más altos hacen al jefe más resistente.</li>
+                    <li><code>attack-damage: 25</code>: Daño por golpe; equilibra esto con la vida para la dificultad.</li>
+                    <li><code>movement-speed: 0.3</code>: Velocidad de movimiento; 0.3 es moderada, ajústala para equilibrar.</li>
+                </ul>
+            </p>
+        </div>
+    </div>
+
+    <!-- Advanced Configurations -->
+    <div class="config-block">
+        <button class="collapsible"><span lang="en">▸ Spawn & Respawn Settings</span><span lang="es">▸ Configuración de Aparición y Reaparición</span></button>
+        <div class="content">
+            <p lang="en">Control how and when the boss spawns or respawns.</p>
+            <p lang="es">Controla cómo y cuándo aparece o reaparece el jefe.</p>
+            <div class="code-example">
+                <pre># Epic Boss Spawn Settings
+'epic_boss':
+  chance: 30
+  spawn-message: '¡Un dragón épico ha emergido de las profundidades!'
+  spawn-sound: 'ENTITY_ENDER_DRAGON_AMBIENT'
+  spawnZone: true
+  activespawnInterval: true
+  spawnInterval: 1200  # 20 minutes
+  allowBossRespawn: true
+  MaxRespawn: 3
+  respawnInterval: 3600  # 1 hour
+  RespawnMessages:
+    - "¡El temible {bossname} ha regresado para causar estragos!"</pre>
+            </div>
+            <p lang="en"><strong>Explanation:</strong>
+                <ul>
+                    <li><code>chance: 30</code>: 30% probability of spawning naturally.</li>
+                    <li><code>spawn-message</code>: Displays this message to players when the boss spawns.</li>
+                    <li><code>spawn-sound</code>: Plays this sound (Minecraft sound ID) on spawn.</li>
+                    <li><code>spawnZone: true</code>: Uses a custom spawn area if defined.</li>
+                    <li><code>activespawnInterval: true</code>: Enables a custom spawn interval.</li>
+                    <li><code>spawnInterval: 1200</code>: Spawns every 20 minutes (in seconds).</li>
+                    <li><code>allowBossRespawn: true</code>: Allows the boss to respawn after defeat.</li>
+                    <li><code>MaxRespawn: 3</code>: Limits respawns to 3 times.</li>
+                    <li><code>respawnInterval: 3600</code>: Respawns after 1 hour (in seconds).</li>
+                    <li><code>RespawnMessages</code>: List of messages shown on respawn; <code>{bossname}</code> is replaced by the display name.</li>
+                </ul>
+            </p>
+            <p lang="es"><strong>Explicación:</strong>
+                <ul>
+                    <li><code>chance: 30</code>: 30% de probabilidad de aparecer naturalmente.</li>
+                    <li><code>spawn-message</code>: Muestra este mensaje a los jugadores cuando aparece el jefe.</li>
+                    <li><code>spawn-sound</code>: Reproduce este sonido (ID de sonido de Minecraft) al aparecer.</li>
+                    <li><code>spawnZone: true</code>: Usa un área de aparición personalizada si está definida.</li>
+                    <li><code>activespawnInterval: true</code>: Habilita un intervalo de aparición personalizado.</li>
+                    <li><code>spawnInterval: 1200</code>: Aparece cada 20 minutos (en segundos).</li>
+                    <li><code>allowBossRespawn: true</code>: Permite que el jefe reaparezca tras ser derrotado.</li>
+                    <li><code>MaxRespawn: 3</code>: Limita las reapariciones a 3 veces.</li>
+                    <li><code>respawnInterval: 3600</code>: Reaparece después de 1 hora (en segundos).</li>
+                    <li><code>RespawnMessages</code>: Lista de mensajes mostrados al reaparecer; <code>{bossname}</code> se reemplaza por el nombre visible.</li>
+                </ul>
+            </p>
+        </div>
+
+        <button class="collapsible"><span lang="en">▸ Combat Mechanics</span><span lang="es">▸ Mecánicas de Combate</span></button>
+        <div class="content">
+            <p lang="en">Customize attacks, triggers, and resistances.</p>
+            <p lang="es">Personaliza ataques, desencadenantes y resistencias.</p>
+            <div class="code-example">
+                <pre># Epic Boss Combat
+'epic_boss':
+  fire_damage: false
+  attack: true
+  attacks:
+    - "fire_breath"
+    - "tail_whip"
+    - "summon_minions"
+  triggers:
+    on_defeat: "spawn_epic_reward"</pre>
+            </div>
+            <p lang="en"><strong>Explanation:</strong>
+                <ul>
+                    <li><code>fire_damage: false</code>: Boss is immune to fire damage.</li>
+                    <li><code>attack: true</code>: Enables custom attack abilities.</li>
+                    <li><code>attacks</code>: List of attack IDs defined elsewhere (e.g., in attacks.yml).</li>
+                    <li><code>triggers</code>: Events triggered on specific conditions; <code>on_defeat</code> runs the "spawn_epic_reward" action when the boss dies.</li>
+                </ul>
+            </p>
+            <p lang="es"><strong>Explicación:</strong>
+                <ul>
+                    <li><code>fire_damage: false</code>: El jefe es inmune al daño por fuego.</li>
+                    <li><code>attack: true</code>: Habilita habilidades de ataque personalizadas.</li>
+                    <li><code>attacks</code>: Lista de IDs de ataques definidos en otro lugar (por ejemplo, en attacks.yml).</li>
+                    <li><code>triggers</code>: Eventos que se activan en condiciones específicas; <code>on_defeat</code> ejecuta la acción "spawn_epic_reward" al morir el jefe.</li>
+                </ul>
+            </p>
+        </div>
+
+        <button class="collapsible"><span lang="en">▸ Visual Effects</span><span lang="es">▸ Efectos Visuales</span></button>
+        <div class="content">
+            <p lang="en">Add particles for immersive effects.</p>
+            <p lang="es">Añade partículas para efectos inmersivos.</p>
+            <div class="code-example">
+                <pre># Epic Boss Particles
+'epic_boss':
+  particle:
+    particles_options:
+      active: true
+    particles:
+      part1:
+        event: spawn
+        particle: "flame"
+      part2:
+        event: attack
+        particle: "lava"</pre>
+            </div>
+            <p lang="en"><strong>Explanation:</strong>
+                <ul>
+                    <li><code>particle</code>: Section for particle effects.</li>
+                    <li><code>particles_options.active: true</code>: Enables particle effects.</li>
+                    <li><code>particles</code>: Defines multiple particle effects; each has an <code>event</code> (when it triggers) and <code>particle</code> (type, e.g., "flame" or "lava").</li>
+                </ul>
+            </p>
+            <p lang="es"><strong>Explicación:</strong>
+                <ul>
+                    <li><code>particle</code>: Sección para efectos de partículas.</li>
+                    <li><code>particles_options.active: true</code>: Habilita los efectos de partículas.</li>
+                    <li><code>particles</code>: Define múltiples efectos de partículas; cada uno tiene un <code>event</code> (cuándo se activa) y <code>particle</code> (tipo, por ejemplo, "flame" o "lava").</li>
+                </ul>
+            </p>
+        </div>
+
+        <button class="collapsible"><span lang="en">▸ Equipment & Appearance</span><span lang="es">▸ Equipamiento y Apariencia</span></button>
+        <div class="content">
+            <p lang="en">Define the boss's gear and skin.</p>
+            <p lang="es">Define el equipo y la piel del jefe.</p>
+            <div class="code-example">
+                <pre># Epic Boss Equipment
+'epic_boss':
+  Skin: 'epic_dragon_skin'
+  enable-equipment: true
+  equipment:
+    main-hand: 'dragon_sword'
+    helmet: 'dragon_helm'
+    chestplate: 'dragon_armor'</pre>
+            </div>
+            <p lang="en"><strong>Explanation:</strong>
+                <ul>
+                    <li><code>Skin: 'epic_dragon_skin'</code>: Custom skin file name (from the skins folder).</li>
+                    <li><code>enable-equipment: true</code>: Allows the boss to wear gear.</li>
+                    <li><code>equipment</code>: Specifies items; <code>main-hand</code>, <code>helmet</code>, and <code>chestplate</code> use item IDs or names.</li>
+                </ul>
+            </p>
+            <p lang="es"><strong>Explicación:</strong>
+                <ul>
+                    <li><code>Skin: 'epic_dragon_skin'</code>: Nombre del archivo de piel personalizado (de la carpeta skins).</li>
+                    <li><code>enable-equipment: true</code>: Permite que el jefe use equipo.</li>
+                    <li><code>equipment</code>: Especifica objetos; <code>main-hand</code>, <code>helmet</code> y <code>chestplate</code> usan IDs o nombres de objetos.</li>
+                </ul>
+            </p>
+        </div>
+
+        <button class="collapsible"><span lang="en">▸ Rewards</span><span lang="es">▸ Recompensas</span></button>
+        <div class="content">
+            <p lang="en">Set rewards for top performers.</p>
+            <p lang="es">Establece recompensas para los mejores jugadores.</p>
+            <div class="code-example">
+                <pre># Epic Boss Rewards
+'epic_boss':
+  rewards:
+    top_1:
+      reward:
+        type: command
+        commands:
+          - 'give %player% elytra 1'
+          - 'give %player% dragon_egg 1'
+    top_2:
+      reward:
+        type: item
+        item: 'dragon_scale'
+        amount: 5
+    top_3:
+      reward:
+        type: itemgroup
+        item: 'epic_loot'
+        amount: 3</pre>
+            </div>
+            <p lang="en"><strong>Explanation:</strong>
+                <ul>
+                    <li><code>rewards</code>: Defines rewards for the top 3 damage dealers.</li>
+                    <li><code>top_1</code>: For the highest damage dealer; <code>type: command</code> runs server commands (e.g., giving elytra and a dragon egg).</li>
+                    <li><code>top_2</code>: <code>type: item</code> gives a specific item (<code>dragon_scale</code>) with an <code>amount</code>.</li>
+                    <li><code>top_3</code>: <code>type: itemgroup</code> gives items from a predefined group (<code>epic_loot</code>).</li>
+                </ul>
+            </p>
+            <p lang="es"><strong>Explicación:</strong>
+                <ul>
+                    <li><code>rewards</code>: Define recompensas para los 3 mejores infligidores de daño.</li>
+                    <li><code>top_1</code>: Para el mayor infligidor de daño; <code>type: command</code> ejecuta comandos del servidor (por ejemplo, dar élitros y un huevo de dragón).</li>
+                    <li><code>top_2</code>: <code>type: item</code> da un objeto específico (<code>dragon_scale</code>) con una <code>amount</code>.</li>
+                    <li><code>top_3</code>: <code>type: itemgroup</code> da objetos de un grupo predefinido (<code>epic_loot</code>).</li>
+                </ul>
+            </p>
+        </div>
+
+        <button class="collapsible"><span lang="en">▸ Location</span><span lang="es">▸ Ubicación</span></button>
+        <div class="content">
+            <p lang="en">Specify where the boss spawns.</p>
+            <p lang="es">Especifica dónde aparece el jefe.</p>
+            <div class="code-example">
+                <pre># Epic Boss Location
+'epic_boss':
+  location:
+    world: "epic_boss_arena"
+    coordinates:
+      x: 0
+      y: 100
+      z: 0</pre>
+            </div>
+            <p lang="en"><strong>Explanation:</strong>
+                <ul>
+                    <li><code>location</code>: Defines the spawn point.</li>
+                    <li><code>world</code>: The world name where the boss spawns (must exist on the server).</li>
+                    <li><code>coordinates</code>: Exact X, Y, Z coordinates for the spawn location.</li>
+                </ul>
+            </p>
+            <p lang="es"><strong>Explicación:</strong>
+                <ul>
+                    <li><code>location</code>: Define el punto de aparición.</li>
+                    <li><code>world</code>: El nombre del mundo donde aparece el jefe (debe existir en el servidor).</li>
+                    <li><code>coordinates</code>: Coordenadas exactas X, Y, Z para la ubicación de aparición.</li>
+                </ul>
+            </p>
+        </div>
+    </div>
+
+    <!-- Complete Examples -->
+    <div class="config-block">
+        <h3><span lang="en">Complete Boss Examples</span><span lang="es">Ejemplos Completos de Jefes</span></h3>
+        <button class="collapsible"><span lang="en">▸ Epic Boss (Ender Dragon)</span><span lang="es">▸ Epic Boss (Dragón del Ender)</span></button>
+        <div class="content">
+            <div class="code-example">
+                <pre>'epic_boss':
+  boss-id: "3"
+  level: 10
+  enabled: true
+  fire_damage: false
+  chance: 30
+  Skin: 'epic_dragon_skin'
+  allowBossRespawn: true
+  MaxRespawn: 3
+  RespawnMessages:
+    - "¡El temible {bossname} ha regresado para causar estragos!"
+  respawnInterval: 3600
+  activespawnInterval: true
+  spawnInterval: 1200
+  spawnZone: true
+  spawn-message: '¡Un dragón épico ha emergido de las profundidades!'
+  spawn-sound: 'ENTITY_ENDER_DRAGON_AMBIENT'
+  mob-type: ENDER_DRAGON
+  display-name: 'Dragón del Caos'
+  attack-damage: 25
+  health: 1000
+  movement-speed: 0.3
+  enable-equipment: true
+  attack: true
+  bossRespawnMessage: "%prefix% &c¡Cuidado! {bossname} ha regresado más fuerte que nunca."
+  triggers:
+    on_defeat: "spawn_epic_reward"
+  particle:
+    particles_options:
+      active: true
+    particles:
+      part1:
+        event: spawn
+        particle: "flame"
+      part2:
+        event: attack
+        particle: "lava"
+  attacks:
+    - "fire_breath"
+    - "tail_whip"
+    - "summon_minions"
+  location:
+    world: "epic_boss_arena"
+    coordinates:
+      x: 0
+      y: 100
+      z: 0
+  equipment:
+    main-hand: 'dragon_sword'
+    helmet: 'dragon_helm'
+    chestplate: 'dragon_armor'
+  rewards:
+    top_1:
+      reward:
+        type: command
+        commands:
+          - 'give %player% elytra 1'
+          - 'give %player% dragon_egg 1'
+    top_2:
+      reward:
+        type: item
+        item: 'dragon_scale'
+        amount: 5
+    top_3:
+      reward:
+        type: itemgroup
+        item: 'epic_loot'
+        amount: 3</pre>
+            </div>
+            <p lang="en"><strong>Explanation:</strong> This is a high-level boss with custom gear, powerful attacks, and epic rewards. It’s immune to fire, respawns up to 3 times, and uses dramatic visual effects like flames and lava particles.</p>
+            <p lang="es"><strong>Explicación:</strong> Este es un jefe de alto nivel con equipo personalizado, ataques poderosos y recompensas épicas. Es inmune al fuego, reaparece hasta 3 veces y usa efectos visuales dramáticos como partículas de llamas y lava.</p>
+        </div>
+
+        <button class="collapsible"><span lang="en">▸ Mighty Guardian (Zombie)</span><span lang="es">▸ Mighty Guardian (Zombi)</span></button>
+        <div class="content">
+            <div class="code-example">
+                <pre>'example_2':
+  boss-id: "1"
+  level: 1
+  enabled: false
+  fire_damage: true
+  chance: 0
+  Skin: 'default'
+  allowBossRespawn: true
+  MaxRespawn: 2
+  RespawnMessages:
+    - "{bossname} has respawned"
+  respawnInterval: 1800
+  activespawnInterval: false
+  spawnInterval: 1000
+  spawnZone: false
+  spawn-message: 'A formidable foe has emerged!'
+  spawn-sound: 'ENTITY_WITHER_SPAWN'
+  mob-type: ZOMBIE
+  display-name: 'Mighty Guardian'
+  attack-damage: 10
+  health: 100
+  movement-speed: 0.2
+  enable-equipment: false
+  attack: false
+  bossRespawnMessage: "%prefix% &e{bossname} has respawned!"
+  triggers:
+    on_defeat: "end_crystal_spawn"
+  particle:
+    particles_options:
+      active: true
+    particles:
+      part1:
+        event: spawn
+        particle: "left_wing"
+  attacks:
+    - "basic_attack"
+    - "Invoke"
+  location:
+    world: "world"
+    coordinates:
+      x: 150
+      y: 90
+      z: -50
+  equipment:
+    main-hand: ''
+    off-hand: ''
+    helmet: ''
+    chestplate: ''
+    leggings: ''
+    boots: ''
+  rewards:
+    top_1:
+      reward:
+        type: denarius
+        item: 'gold_coin'
+        amount: 2
+    top_2:
+      reward:
+        type: item
+        item: 'item_1650972105000'
+        amount: 2
+    top_3:
+      reward:
+        type: itemgroup
+        item: 'grupo1'
+        amount: 2</pre>
+            </div>
+            <p lang="en"><strong>Explanation:</strong> A simpler boss, disabled by default (<code>enabled: false</code>), with basic stats and no equipment. It’s vulnerable to fire and has modest rewards, suitable for early-game challenges.</p>
+            <p lang="es"><strong>Explicación:</strong> Un jefe más simple, desactivado por defecto (<code>enabled: false</code>), con estadísticas básicas y sin equipo. Es vulnerable al fuego y tiene recompensas modestas, ideal para desafíos de inicio de juego.</p>
+        </div>
+
+        <button class="collapsible"><span lang="en">▸ Shadow Beast (Ender Dragon)</span><span lang="es">▸ Shadow Beast (Dragón del Ender)</span></button>
+        <div class="content">
+            <div class="code-example">
+                <pre>'example_3':
+  boss-id: "2"
+  level: 3
+  enabled: false
+  fire_damage: false
+  chance: 50
+  Skin: 'mythic_skin'
+  allowBossRespawn: true
+  MaxRespawn: 5
+  RespawnMessages:
+    - "{bossname} returns stronger than ever!"
+  respawnInterval: 900
+  activespawnInterval: true
+  spawnInterval: 500
+  spawnZone: true
+  spawn-message: 'A mythic beast arises from the shadows!'
+  spawn-sound: 'ENTITY_ENDER_DRAGON_GROWL'
+  mob-type: ENDER_DRAGON
+  display-name: 'Shadow Beast'
+  attack-damage: 20
+  health: 300
+  movement-speed: 0.4
+  enable-equipment: true
+  attack: true
+  bossRespawnMessage: "%prefix% &e{bossname} ha vuelto para vengarse."
+  particle:
+    particles_options:
+      active: true
+    particles:
+      part1:
+        event: attack
+        particle: "explosion"
+  attacks:
+    - "fire_breath"
+    - "shadow_slash"
+  location:
+    world: "shadow_realm"
+    coordinates:
+      x: -200
+      y: 50
+      z: 300
+  equipment:
+    main-hand: 'shadow_sword'
+    helmet: 'shadow_helm'
+  rewards:
+    top_1:
+      reward:
+        type: command
+        commands:
+          - 'give %player% nether_star 1'
+    top_2:
+      reward:
+        type: item
+        item: 'item_rare_sword'
+        amount: 1
+    top_3:
+      reward:
+        type: itemgroup
+        item: 'legendary_group'
+        amount: 1</pre>
+            </div>
+            <p lang="en"><strong>Explanation:</strong> A mid-tier boss with a 50% spawn chance, custom equipment, and explosion effects on attack. It’s disabled by default but offers balanced difficulty and rewards for mid-game play.</p>
+            <p lang="es"><strong>Explicación:</strong> Un jefe de nivel intermedio con un 50% de probabilidad de aparición, equipo personalizado y efectos de explosión al atacar. Está desactivado por defecto, pero ofrece una dificultad y recompensas equilibradas para el juego intermedio.</p>
+        </div>
+    </div>
+
+    <!-- Tips and Common Errors -->
+    <div class="step">
+        <h3><span lang="en">⚠️ Tips & Common Errors</span><span lang="es">⚠️ Consejos y Errores Comunes</span></h3>
+        <ul>
+            <li lang="en">Ensure <code>mob-type</code> matches Minecraft entity names (e.g., <code>ENDER_DRAGON</code>, <code>ZOMBIE</code>).</li>
+            <li lang="es">Asegúrate de que <code>mob-type</code> coincida con nombres de entidades de Minecraft (por ejemplo, <code>ENDER_DRAGON</code>, <code>ZOMBIE</code>).</li>
+            <li lang="en">Verify the <code>world</code> exists on your server.</li>
+            <li lang="es">Verifica que el <code>world</code> exista en tu servidor.</li>
+            <li lang="en">Set <code>enabled: true</code> to activate the boss.</li>
+            <li lang="es">Establece <code>enabled: true</code> para activar al jefe.</li>
+        </ul>
+    </div>
+</section>
+<!-- Attacks Configuration Section -->
+<section id="attacks-config" class="section" style="display:none;">
+    <h2><span lang="en">Advanced Attack System</span><span lang="es">Sistema de Ataques Avanzado</span></h2>
+
+    <!-- Basic Attack Structure -->
+    <div class="step-by-step">
+        <div class="step">
+            <h3><span lang="en">1. Attack Fundamentals</span><span lang="es">1. Fundamentos de Ataques</span></h3>
+            <div class="code-example">
+                <pre>attacks:
+  attack_id:
+    name: "Attack Name"
+    type: "physical/magical/summon"
+    damage: 20
+    probability: 0.5</pre>
+            </div>
+        </div>
+    </div>
+
+    <!-- Attack Types Collapsibles -->
+    <div class="config-block">
+        <button class="collapsible"><span lang="en">▸ Physical Attacks</span><span lang="es">▸ Ataques Físicos</span></button>
+        <div class="content">
+            <div class="code-example">
+                <pre>earthquake:
+  name: "Earthquake"
+  type: "physical"
+  damage: 25
+  probability: 0.5
+  targets: "ALL"
+  knockback: 2
+  visual_effects:
+    particle: "BLOCK_CRACK"
+    sound: "ENTITY_GENERIC_EXPLODE"</pre>
+            </div>
+            <p><span lang="en">Key parameters: knockback, targets (ALL/RANDOM)</span>
+               <span lang="es">Parámetros clave: knockback, targets (ALL/RANDOM)</span></p>
+        </div>
+
+        <button class="collapsible"><span lang="en">▸ Magical Attacks</span><span lang="es">▸ Ataques Mágicos</span></button>
+        <div class="content">
+            <div class="code-example">
+                <pre>fire_breath:
+  type: "magical"
+  damage: 40
+  effect_id: 12
+  amplifier: 2
+  area_of_effect:
+    radius: 6
+    shape: "CONE"</pre>
+            </div>
+            <p><span lang="en">Essential: effect_id (Potion IDs), shape (CIRCLE/CONE)</span>
+               <span lang="es">Esencial: effect_id (IDs de poción), shape (CIRCLE/CONE)</span></p>
+        </div>
+
+        <button class="collapsible"><span lang="en">▸ Summon Attacks</span><span lang="es">▸ Invocaciones</span></button>
+        <div class="content">
+            <div class="code-example">
+                <pre>shadow_clone:
+  type: "summon"
+  type_Mob: WITHER_SKELETON
+  amount: 2
+  spawn-effects:
+    particle: "SMOKE_LARGE"
+    sound: "ENTITY_ENDERMAN_TELEPORT"</pre>
+            </div>
+            <p><span lang="en">Required: type_Mob (Minecraft entity name)</span>
+               <span lang="es">Requerido: type_Mob (nombre de entidad)</span></p>
+        </div>
+    </div>
+
+    <!-- Special Mechanics -->
+    <div class="config-block">
+        <h3><span lang="en">Special Combat Mechanics</span><span lang="es">Mecánicas Especiales</span></h3>
+        <div class="code-example">
+            <pre>advanced_special:
+  type: "combo"
+  combo_attacks:
+    - basic_attack
+    - magical
+  combo_message: "Ultimate combination attack!"
+
+healing:
+  type: "heal"
+  heal_amount: 50
+  visual_effects:
+    particle: "HEART"</pre>
+        </div>
+    </div>
+
+    <!-- Visual Effects Guide -->
+    <div class="step">
+        <h3><span lang="en">🎨 Visual Effects Reference</span><span lang="es">🎨 Referencia de Efectos</span></h3>
+        <div class="code-example">
+            <pre># Particle types: 
+# FLAME, LAVA, HEART, PORTAL, CRIT
+
+# Sound effects: 
+# ENTITY_ENDER_DRAGON_GROWL
+# BLOCK_ANVIL_LAND</pre>
+        </div>
+    </div>
+
+    <!-- Common Errors -->
+    <div class="step">
+        <h3><span lang="en">⚠️ Frequent Configuration Errors</span><span lang="es">⚠️ Errores Frecuentes</span></h3>
+        <ul>
+            <li><span lang="en">Invalid effect_id: Use correct potion IDs (1-32)</span>
+                <span lang="es">effect_id inválido: Usar IDs de poción correctos</span></li>
+            <li><span lang="en">Missing cooldown: Can cause attack spamming</span>
+                <span lang="es">Falta cooldown: Provoca spam de ataques</span></li>
+            <li><span lang="en">Wrong mob-type: Verify entity names (case-sensitive)</span>
+                <span lang="es">Mob-type incorrecto: Nombres son sensibles a mayúsculas</span></li>
+        </ul>
+    </div>
+</section>
+
+
+        <!-- Add other sections following the same pattern -->
+        
+    </div>
+
+    <script>
+        // Language Management
+        let currentLang = 'en';
+        const langElements = document.querySelectorAll('[lang]');
+        
+        function toggleLanguage() {
+            currentLang = currentLang === 'en' ? 'es' : 'en';
+            document.documentElement.lang = currentLang;
+            langElements.forEach(el => {
+                el.style.display = el.getAttribute('lang') === currentLang ? 'block' : 'none';
+            });
+        }
+
+        // Collapsible Sections
+        document.querySelectorAll('.collapsible').forEach(button => {
+            button.addEventListener('click', function() {
+                this.classList.toggle('active');
+                const content = this.nextElementSibling;
+                content.style.maxHeight = content.style.maxHeight 
+                    ? null 
+                    : content.scrollHeight + "px";
+            });
+        });
+
+        // Navigation System
+        function showSection(sectionId) {
+            document.querySelectorAll('.section').forEach(section => {
+                section.style.display = 'none';
+            });
+            document.getElementById(sectionId).style.display = 'block';
+            window.scrollTo(0, 0);
+        }
+
+        // Initial Setup
+        window.onload = () => {
+            toggleLanguage();
+            showSection('quick-start');
+        };
+    </script>
+</body>
+</html>
